@@ -8,6 +8,35 @@
     <script src="./main.js"></script>
 </head>
 <body>
-    
+    <section id="login">
+        <form action="">
+            <div>
+                <label for="username">Username</label>
+                <input required id="username" type="text">
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input required id="password" type="password">
+            </div>
+            <div>
+                <button type="submit" onclick="login(event)">Ingresar</button>
+            </div>
+        </form>
+    </section>
+
+    <section id="products" style="display: none;">
+        <h2>Selecciona un producto:</h2>
+
+    </section>
+
+    <section id="cart" style="display: none;">
+        <h2>Carrito</h2>
+        <ul id="cart-list">
+        </ul>
+        <p>Precio Final: <span id="final-price"></span></p>
+        <div>
+            <button onclick="checkout()">Checkout</button>
+        </div>
+    </section>
 </body>
 </html>
