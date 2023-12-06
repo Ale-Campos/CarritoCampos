@@ -22,11 +22,10 @@ const productsList = generateProductList(productList, prices);
 
 let loggedUsername;
 let loggedPassword;
-let authorized = false;
 let maxAttempts = 3;
 let currentAttempts = 0;
 let finalPrice = 0;
-let  cart = [];
+let cart = [];
 
 function login(event) {
   event.preventDefault();
@@ -36,10 +35,7 @@ function login(event) {
 
   let loggedUser = usersList.find((user) => user.username == loggedUsername);
 
-  console.log(loggedUser);
   if (loggedUser != undefined && loggedUser.password === loggedPassword) {
-    authorized = true;
-    console.log("Autorizado");
 
     start();
 
@@ -90,7 +86,6 @@ function showPoducts() {
 }
 
 function addToCart(index) {
-    console.log(index);
     if(localStorage.getItem("cart") === null){
 
         localStorage.setItem("cart", JSON.stringify([]));
@@ -144,15 +139,4 @@ function generateProductList(productList, prices) {
     products.push(product);
   }
   return products;
-}
-
-function generateOfferMessage(productList, finalPrice) {
-  let initialMessage =
-    'Ingresa algunos de los productos o "Salir" para terminar tu compra';
-
-  productList.forEach((product) => {
-    initialMessage += `\n ${product.name}: ${product.price}`;
-  });
-  initialMessage += `\n salir \n Precio final: ${finalPrice}`;
-  return initialMessage;
 }
