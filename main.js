@@ -12,6 +12,20 @@ class Product {
     this.price = price;
   }
 }
+// TODO: MOSTRAR CATALOGO DE MOTOS, que se puedan ver mas detalles y
+// guardar un historial de las motos que se vieron
+//  axios
+//   .get("https://api.api-ninjas.com/v1/motorcycles?make=kawasaki", {
+//     headers:{
+//       'X-Api-Key': 'IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip'
+//     }
+//   })
+//   .then(function (response) {
+//     console.log(response.data);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
 
 const authUsers = ["user", "test", "admin", "developer"];
 const authPasswords = ["user1234", "test90921", "admin22884", "developer0011"];

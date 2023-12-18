@@ -3,43 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script src="./main.js"></script>
 </head>
 <body>
-    <section id="login">
-        <form action="">
-            <div>
-                <label for="username">Username</label>
-                <input required id="username" type="text">
+    <header>
+        <h1>Carrito de Compras</h1>
+    </header>
+    <main>
+        <section id="login">
+            <h2>Ingresar</h2>
+            <form action="">
+                <div>
+                    <input required id="username" type="text" placeholder="Nombre de Usuario">
+                </div>
+                <div>
+                    <input required id="password" type="password" placeholder="Contraseña">
+                </div>
+                <div class="login-button-container">
+                    <button type="submit" onclick="login(event)">Ingresar</button>
+                </div>
+            </form>
+        </section>
+    
+        <section id="products" style="display: none;">
+            <h2>Selecciona un producto:</h2>
+            <input type="text" name="search" value="" id="search" placeholder="Buscar" onkeypress="searchProduct()">
+            <div id="products-list">
+    
             </div>
+        </section>
+    
+        <section id="cart" style="display: none;">
+            <h2>Carrito</h2>
+            <ul id="cart-list">
+            </ul>
+            <p>Precio Final: <span id="final-price"></span></p>
             <div>
-                <label for="password">Password</label>
-                <input required id="password" type="password">
+                <button onclick="checkout()">Checkout</button>
             </div>
-            <div>
-                <button type="submit" onclick="login(event)">Ingresar</button>
-            </div>
-        </form>
-    </section>
+        </section>
+    </main>
+    <footer>
 
-    <section id="products" style="display: none;">
-        <h2>Selecciona un producto:</h2>
-        <input type="text" name="search" value="" id="search" placeholder="Buscar" onkeypress="searchProduct()">
-        <div id="products-list">
-
-        </div>
-    </section>
-
-    <section id="cart" style="display: none;">
-        <h2>Carrito</h2>
-        <ul id="cart-list">
-        </ul>
-        <p>Precio Final: <span id="final-price"></span></p>
-        <div>
-            <button onclick="checkout()">Checkout</button>
-        </div>
-    </section>
+    </footer>
+    <script src="./main.js"></script>
 </body>
 </html>
