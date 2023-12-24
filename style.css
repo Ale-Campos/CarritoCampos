@@ -56,6 +56,11 @@ label {
 
 
 .details-modal {
+
+    position: fixed;
+    top: 35%;
+    left: 40%;
+
     display: none;
     justify-content: center;
     align-items: center;
@@ -63,7 +68,7 @@ label {
     margin: auto;
     width: 300px;
     height: 300px;
-    background-color: #f2f2f2;
+    background-color: #929292;
     border-radius: 10px;
 }
 
@@ -93,7 +98,21 @@ label {
 }
 
 #cart {
-    /* display: flex !important;
-    justify-content: center;
-    flex-wrap: wrap; */
+    text-align: center;
+}
+
+.close {
+    cursor: pointer;
+
+}
+
+#cart-list {
+    text-align: center;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+
+#bikes-container {
+    text-align: center;
 }

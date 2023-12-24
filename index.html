@@ -28,7 +28,7 @@
             </form>
         </section>
     
-        <section id="products" style="display: none;">
+        <section id="bikes-container" style="display: none;">
             <h2>Busca la que quieras:</h2>
             <select name="filtro" id="filtro">
                 <option selected value="make">Marca</option>
@@ -43,10 +43,10 @@
     
         <section id="cart" style="display: none;">
             <h2>Favoritos</h2>
-            <ul id="cart-list">
-            </ul>
+            <div id="cart-list">
+            </div>
             <div>
-                <button onclick="checkout()">Checkout</button>
+                <button onclick="clearFavourites()">Limpiar Favoritos</button>
             </div>
         </section>
 

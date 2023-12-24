@@ -124,7 +124,7 @@ function showPoducts(search) {
         `;
         motoContainer.appendChild(motoNueva);
   });
-  document.getElementById("products").style.display = "block";
+  document.getElementById("bikes-container").style.display = "block";
   motoContainer.style.display = "block";
   document.getElementById("cart").style.display = "block";
 }
@@ -154,7 +154,8 @@ function updateCartView(cart) {
   cartListView = document.getElementById("cart-list");
   cartListView.innerHTML = "";
   cart.forEach((moto) => {
-    let listItem = document.createElement("li");
+    let listItem = document.createElement("article");
+    listItem.className = "bike";
     listItem.innerHTML = `
             <h4 style="text-transform: capitalize">${moto.make}</h4>
             <p>${moto.model}</p>
@@ -163,8 +164,9 @@ function updateCartView(cart) {
   });
 }
 
-function checkout() {
-  alert("Gracias por su compra");
+function clearFavourites() {
+
+  alert("Se han eliminado todos los favoritos");
   localStorage.removeItem("cart");
   updateCartView([]);
 }
@@ -199,16 +201,21 @@ function showBike(model) {
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <h3 style="text-transform: capitalize">${moto.make}</h3>
-      <p>${moto.model}</p>
-      <p>${moto.year}</p>
-      <p>${moto.engine}</p>
-      <p>${moto.fuel_capacity}</p>
-      <p>${moto.fuel_system}</p>
-      <p>${moto.gearbox}</p>
-      <p>${moto.type}</p>
-      <p>${moto.compression}</p>
+      <p><span>Modelo: </span>${moto.model}</p>
+      <p><span>Año:</span>${moto.year}</p>
+      <p><span>Tipo: </span>${moto.type}</p>
+      <p><span>Motor: </span>${moto.engine}</p>
+      <p><span>Capacidad de tanque: </span>${moto.fuel_capacity}</p>
+      <p><span>Compresión: </span>${moto.compression}</p>
+      <p><span>Systema de admisión: </span>${moto.fuel_system?moto.fuel_system: 'Sin información'}</p>
+      <p><span>Caja de cambios: </span>${moto.gearbox}</p>
 
       
     </div>
   `;
+}
+
+function closeModal() {
+  let modal = document.getElementById("details-modal");
+  modal.style.display = "none";
 }
