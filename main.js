@@ -79,9 +79,8 @@ async function  searchBike() {
     return;
   }
 
-  console.log(filter);
   let url = `https://api.api-ninjas.com/v1/motorcycles?${filter}=${search}`;
-  console.log(url);
+
   await fetch(url, {
   headers: {
     "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
@@ -90,7 +89,6 @@ async function  searchBike() {
   .then((response) => response.json())
   .then((data) => {
     motos = data
-    console.log(motos);
   })
   .catch(function (error) {
     console.log(error);
