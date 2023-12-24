@@ -122,7 +122,7 @@ function showPoducts() {
             <p>Modelo: ${moto.model}</p>
             <p>Cilindrada: ${moto.displacement.split('.')[0]}cc</p>
             <div class='card-buttons'>
-              <button type="button" onclick="showBike('${moto.model}')">Ver</button>
+              <button type="button" onclick="showBike('${moto.model}', '${moto.year}' )">Ver</button>
               <button type="button" onclick="addToFavourites('${moto.model}', '${moto.year}')">Agregar a favoritos</button>
             <div>
         `;
@@ -134,7 +134,6 @@ function showPoducts() {
 }
 
 async function addToFavourites(model, year) {
-  console.log('Agrego a favoritos');
   Swal.fire({
     position: "top-center",
     icon: "success",
@@ -148,15 +147,12 @@ async function addToFavourites(model, year) {
   }
   bikes = JSON.parse(localStorage.getItem("cart"));
 
-  let motoFilter = await fetch(`https://api.api-ninjas.com/v1/motorcycles?model=${model}&year=${year}`, {
-    headers: {
-      "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
-    }
-  }).then((response) => response.json()).then((data) => data);
-  // .find((moto) => moto.model === model)
-  motoFilter = motoFilter.find((moto) => moto.model === model && moto.year === year)
+  let motoFilter = await getBike(model, year);
+
   bikes.push(motoFilter);
+
   localStorage.setItem("cart", JSON.stringify(bikes));
+
   updateFavView(bikes);
 }
 
@@ -170,6 +166,10 @@ function updateFavView(bikes) {
     listItem.innerHTML = `
             <h4 style="text-transform: capitalize">${moto.make}</h4>
             <p>${moto.model}</p>
+
+            <div class='card-buttons'>
+              <button type="button" onclick="showBike('${moto.model}', '${moto.year}')">Ver</button>
+            <div>
         `;
     cartListView.appendChild(listItem);
   });
@@ -201,22 +201,24 @@ function generateAuthUserList(usernameList, passwordList) {
   return users;
 }
 
-function showBike(model) {
-  let moto = motos.find((moto) => moto.model === model);
+async function showBike(model, year) {
+
+  let motoFilter = await getBike(model, year);
+
 
   Swal.fire({
-    title: `<h3 style="text-transform: capitalize">${moto.make}</h3>
-            <h6>${moto.model}</h6> `,
+    title: `<h3 style="text-transform: capitalize">${motoFilter.make}</h3>
+            <h6>${motoFilter.model}</h6> `,
     icon: "info",
     html: `
     <div class="modal-content">
-      <p><span>Año: </span>${moto.year? moto.year : 'Sin información'}</p>
-      <p><span>Tipo: </span>${moto.type? moto.type : 'Sin información'}</p>
-      <p><span>Motor: </span>${moto.engine? moto.engine : 'Sin información'}</p>
-      <p><span>Capacidad de tanque: </span>${moto.fuel_capacit? moto.fuel_capacit : 'Sin información'}</p>
-      <p><span>Compresión: </span>${moto.compression? moto.compression : 'Sin información'}</p>
-      <p><span>Systema de admisión: </span>${moto.fuel_system? moto.fuel_system: 'Sin información'}</p>
-      <p><span>Caja de cambios: </span>${moto.gearbox? moto.gearbox: 'Sin información'}</p>
+      <p><span>Año: </span>${motoFilter.year? motoFilter.year : 'Sin información'}</p>
+      <p><span>Tipo: </span>${motoFilter.type? motoFilter.type : 'Sin información'}</p>
+      <p><span>Motor: </span>${motoFilter.engine? motoFilter.engine : 'Sin información'}</p>
+      <p><span>Capacidad de tanque: </span>${motoFilter.fuel_capacit? motoFilter.fuel_capacit : 'Sin información'}</p>
+      <p><span>Compresión: </span>${motoFilter.compression? motoFilter.compression : 'Sin información'}</p>
+      <p><span>Systema de admisión: </span>${motoFilter.fuel_system? motoFilter.fuel_system: 'Sin información'}</p>
+      <p><span>Caja de cambios: </span>${motoFilter.gearbox? motoFilter.gearbox: 'Sin información'}</p>
     </div>
     `,
     showCloseButton: true,
@@ -225,4 +227,15 @@ function showBike(model) {
       <i class="fa fa-thumbs-up"></i> Cerrar
     `
   });
+}
+
+async function getBike(model, year) {
+  let motoFilter = await fetch(`https://api.api-ninjas.com/v1/motorcycles?model=${model}&year=${year}`, {
+    headers: {
+      "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
+    }
+  }).then((response) => response.json()).then((data) => data);
+
+  motoFilter = motoFilter.find((moto) => moto.model === model && moto.year === year);
+  return motoFilter;
 }
