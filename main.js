@@ -123,7 +123,7 @@ function showPoducts() {
             <p>Cilindrada: ${moto.displacement.split('.')[0]}cc</p>
             <div class='card-buttons'>
               <button type="button" onclick="showBike('${moto.model}')">Ver</button>
-              <button type="button" onclick="addToFavourites('${moto.model}')">Agregar a favoritos</button>
+              <button type="button" onclick="addToFavourites('${moto.model}', '${moto.year}')">Agregar a favoritos</button>
             <div>
         `;
         motoContainer.appendChild(motoNueva);
@@ -133,8 +133,8 @@ function showPoducts() {
   document.getElementById("cart").style.display = "block";
 }
 
-function addToFavourites(model) {
-
+async function addToFavourites(model, year) {
+  console.log('Agrego a favoritos');
   Swal.fire({
     position: "top-center",
     icon: "success",
@@ -146,18 +146,25 @@ function addToFavourites(model) {
   if (localStorage.getItem("cart") === null) {
     localStorage.setItem("cart", JSON.stringify([]));
   }
-  cart = JSON.parse(localStorage.getItem("cart"));
+  bikes = JSON.parse(localStorage.getItem("cart"));
 
-  cart.push(motos.find((moto) => moto.model === model));
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateFavView(cart);
+  let motoFilter = await fetch(`https://api.api-ninjas.com/v1/motorcycles?model=${model}&year=${year}`, {
+    headers: {
+      "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
+    }
+  }).then((response) => response.json()).then((data) => data);
+  // .find((moto) => moto.model === model)
+  motoFilter = motoFilter.find((moto) => moto.model === model && moto.year === year)
+  bikes.push(motoFilter);
+  localStorage.setItem("cart", JSON.stringify(bikes));
+  updateFavView(bikes);
 }
 
-function updateFavView(cart) {
-  finalPrice = 0;
+function updateFavView(bikes) {
+
   cartListView = document.getElementById("cart-list");
   cartListView.innerHTML = "";
-  cart.forEach((moto) => {
+  bikes.forEach((moto) => {
     let listItem = document.createElement("article");
     listItem.className = "bike";
     listItem.innerHTML = `
