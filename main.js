@@ -12,20 +12,6 @@ class Product {
     this.price = price;
   }
 }
-// TODO: MOSTRAR CATALOGO DE MOTOS, que se puedan ver mas detalles y
-// guardar un historial de las motos que se vieron
-//  axios
-//   .get("https://api.api-ninjas.com/v1/motorcycles?make=kawasaki", {
-//     headers:{
-//       'X-Api-Key': 'IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip'
-//     }
-//   })
-//   .then(function (response) {
-//     console.log(response.data);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
 
 let motos;
 
@@ -67,15 +53,6 @@ function login(event) {
 
   if (loggedUser != undefined && loggedUser.password === loggedPassword) {
     start();
-
-    //TODO:
-    // if (loggedUser.username === "admin") {
-    //   console.log("Es admin");
-    //   start("admin");
-    // } else {
-    //   console.log("Es user");
-    //   start("user");
-    // }
   } else {
     currentAttempts++;
     if (currentAttempts < maxAttempts) {
@@ -97,8 +74,11 @@ function notAllowed() {
 
 async function  searchProduct() {
   search = document.getElementById("search").value;
-
-  await fetch(`https://api.api-ninjas.com/v1/motorcycles?make=${search}`, {
+  let filter = document.getElementById("filtro").value;
+  console.log(filter);
+  let url = `https://api.api-ninjas.com/v1/motorcycles?${filter}=${search}`;
+  console.log(url);
+  await fetch(url, {
   headers: {
     "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
   },
@@ -116,8 +96,8 @@ async function  searchProduct() {
 }
 
 function showPoducts(search) {
-  let prodContainer = document.getElementById("products-list");
-  prodContainer.innerHTML = "";
+  let motoContainer = document.getElementById("products-list");
+  motoContainer.innerHTML = "";
 
   if (search) {
     filterProducts = productsList.filter((product) =>
@@ -130,26 +110,35 @@ function showPoducts(search) {
     cart = JSON.parse(localStorage.getItem("cart"));
     updateCartView(cart);
   }
-  motos.map((product, index) => {
-    let prod = document.createElement("article");
-    prod.className = "bike";
-    prod.innerHTML = `
-            <h3 style="text-transform: capitalize">${product.make}</h3>
-            <p>Modelo: ${product.model}</p>
-            <p>Cilindrada: ${product.displacement.split('.')[0]}cc</p>
+  motos.map((moto) => {
+    let motoNueva = document.createElement("article");
+    motoNueva.className = "bike";
+    motoNueva.innerHTML = `
+            <h3 style="text-transform: capitalize">${moto.make}</h3>
+            <p>Modelo: ${moto.model}</p>
+            <p>Cilindrada: ${moto.displacement.split('.')[0]}cc</p>
             <div class='card-buttons'>
-              <button type="button" onclick="showBike('${product.model}')">Ver</button>
-              <button type="button" onclick="addToCart('${product.model}')">Agregar a carrito</button>
+              <button type="button" onclick="showBike('${moto.model}')">Ver</button>
+              <button type="button" onclick="addToCart('${moto.model}')">Agregar a favoritos</button>
             <div>
         `;
-    prodContainer.appendChild(prod);
+        motoContainer.appendChild(motoNueva);
   });
   document.getElementById("products").style.display = "block";
-  prodContainer.style.display = "block";
+  motoContainer.style.display = "block";
   document.getElementById("cart").style.display = "block";
 }
 
 function addToCart(model) {
+
+  Swal.fire({
+    position: "top-center",
+    icon: "success",
+    title: "Se agregó a favoritos",
+    showConfirmButton: false,
+    timer: 1500
+  });
+
   if (localStorage.getItem("cart") === null) {
     localStorage.setItem("cart", JSON.stringify([]));
   }
@@ -172,7 +161,6 @@ function updateCartView(cart) {
         `;
     cartListView.appendChild(listItem);
   });
-  // document.getElementById("final-price").innerHTML = finalPrice;
 }
 
 function checkout() {
@@ -213,6 +201,14 @@ function showBike(model) {
       <h3 style="text-transform: capitalize">${moto.make}</h3>
       <p>${moto.model}</p>
       <p>${moto.year}</p>
+      <p>${moto.engine}</p>
+      <p>${moto.fuel_capacity}</p>
+      <p>${moto.fuel_system}</p>
+      <p>${moto.gearbox}</p>
+      <p>${moto.type}</p>
+      <p>${moto.compression}</p>
+
+      
     </div>
   `;
 }

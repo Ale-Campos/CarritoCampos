@@ -91,3 +91,9 @@ label {
     display: flex;
     margin-top: 150px;
 }
+
+#cart {
+    /* display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap; */
+}
