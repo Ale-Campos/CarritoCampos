@@ -27,6 +27,22 @@ class Product {
 //     console.log(error);
 //   });
 
+let motos;
+
+fetch("https://api.api-ninjas.com/v1/motorcycles?make=a", {
+  headers: {
+    "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    motos = data
+    console.log(motos);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
 const authUsers = ["user", "test", "admin", "developer"];
 const authPasswords = ["user1234", "test90921", "admin22884", "developer0011"];
 const usersList = generateAuthUserList(authUsers, authPasswords);
@@ -38,7 +54,6 @@ let loggedUsername;
 let loggedPassword;
 let maxAttempts = 3;
 let currentAttempts = 0;
-let finalPrice = 0;
 let cart = [];
 let search = "";
 
@@ -80,8 +95,23 @@ function notAllowed() {
   alert("No se pudo iniciar sesión, intente nuevamente más tarde");
 }
 
-function searchProduct() {
+async function  searchProduct() {
   search = document.getElementById("search").value;
+
+  await fetch(`https://api.api-ninjas.com/v1/motorcycles?make=${search}`, {
+  headers: {
+    "X-Api-Key": "IzwfWFD1SouJpi4lrXhAEw==OqY2Z6Ysd2p5F7Ip",
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    motos = data
+    console.log(motos);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
   showPoducts(search);
 }
 
@@ -100,12 +130,17 @@ function showPoducts(search) {
     cart = JSON.parse(localStorage.getItem("cart"));
     updateCartView(cart);
   }
-  filterProducts.map((product, index) => {
+  motos.map((product, index) => {
     let prod = document.createElement("article");
+    prod.className = "bike";
     prod.innerHTML = `
-            <h3 style="text-transform: capitalize">${product.name}</h3>
-            <p>${product.price}</p>
-            <button type="button" onclick="addToCart(${product.id})">Agregar a carrito</button>
+            <h3 style="text-transform: capitalize">${product.make}</h3>
+            <p>Modelo: ${product.model}</p>
+            <p>Cilindrada: ${product.displacement.split('.')[0]}cc</p>
+            <div class='card-buttons'>
+              <button type="button" onclick="showBike('${product.model}')">Ver</button>
+              <button type="button" onclick="addToCart('${product.model}')">Agregar a carrito</button>
+            <div>
         `;
     prodContainer.appendChild(prod);
   });
@@ -114,13 +149,13 @@ function showPoducts(search) {
   document.getElementById("cart").style.display = "block";
 }
 
-function addToCart(id) {
+function addToCart(model) {
   if (localStorage.getItem("cart") === null) {
     localStorage.setItem("cart", JSON.stringify([]));
   }
   cart = JSON.parse(localStorage.getItem("cart"));
 
-  cart.push(productsList.find((product) => product.id === id));
+  cart.push(motos.find((moto) => moto.model === model));
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartView(cart);
 }
@@ -129,16 +164,15 @@ function updateCartView(cart) {
   finalPrice = 0;
   cartListView = document.getElementById("cart-list");
   cartListView.innerHTML = "";
-  cart.forEach((product) => {
+  cart.forEach((moto) => {
     let listItem = document.createElement("li");
     listItem.innerHTML = `
-            <h4 style="text-transform: capitalize">${product.name}</h4>
-            <p>${product.price}</p>
+            <h4 style="text-transform: capitalize">${moto.make}</h4>
+            <p>${moto.model}</p>
         `;
-    finalPrice += product.price;
     cartListView.appendChild(listItem);
   });
-  document.getElementById("final-price").innerHTML = finalPrice;
+  // document.getElementById("final-price").innerHTML = finalPrice;
 }
 
 function checkout() {
@@ -167,4 +201,18 @@ function generateProductList(productList, prices) {
     products.push(product);
   }
   return products;
+}
+
+function showBike(model) {
+  let moto = motos.find((moto) => moto.model === model);
+  let modal = document.getElementById("details-modal");
+  modal.style.display = "block";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 style="text-transform: capitalize">${moto.make}</h3>
+      <p>${moto.model}</p>
+      <p>${moto.year}</p>
+    </div>
+  `;
 }

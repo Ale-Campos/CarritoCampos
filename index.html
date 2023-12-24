@@ -30,7 +30,8 @@
     
         <section id="products" style="display: none;">
             <h2>Selecciona un producto:</h2>
-            <input type="text" name="search" value="" id="search" placeholder="Buscar" onkeypress="searchProduct()">
+            <input type="text" name="search" value="" id="search" placeholder="Buscar">
+            <button onclick="searchProduct()">Buscar</button>
             <div id="products-list">
     
             </div>
@@ -40,10 +41,13 @@
             <h2>Carrito</h2>
             <ul id="cart-list">
             </ul>
-            <p>Precio Final: <span id="final-price"></span></p>
             <div>
                 <button onclick="checkout()">Checkout</button>
             </div>
+        </section>
+
+        <section id="details-modal" class="details-modal">
+
         </section>
     </main>
     <footer>
