@@ -5,14 +5,6 @@ class User {
   }
 }
 
-class Product {
-  constructor(name, price, id) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-  }
-}
-
 let motos;
 
 fetch("https://api.api-ninjas.com/v1/motorcycles?make=a", {
@@ -23,7 +15,6 @@ fetch("https://api.api-ninjas.com/v1/motorcycles?make=a", {
   .then((response) => response.json())
   .then((data) => {
     motos = data
-    console.log(motos);
   })
   .catch(function (error) {
     console.log(error);
@@ -32,9 +23,6 @@ fetch("https://api.api-ninjas.com/v1/motorcycles?make=a", {
 const authUsers = ["user", "test", "admin", "developer"];
 const authPasswords = ["user1234", "test90921", "admin22884", "developer0011"];
 const usersList = generateAuthUserList(authUsers, authPasswords);
-const productList = ["celular", "televisor", "tablet", "laptop", "heladera"];
-const prices = [300000, 250000, 400000, 600000, 400000];
-const productsList = generateProductList(productList, prices);
 
 let loggedUsername;
 let loggedPassword;
@@ -69,12 +57,28 @@ function start() {
 }
 
 function notAllowed() {
-  alert("No se pudo iniciar sesión, intente nuevamente más tarde");
+  Swal.fire({
+    icon: "error",
+    title: "Oops...",
+    text: "No tienes más intentos disponibles",
+  }).then(() => {
+    window.location.reload();
+  });
 }
 
-async function  searchProduct() {
+async function  searchBike() {
   search = document.getElementById("search").value;
   let filter = document.getElementById("filtro").value;
+
+  if(search === "") {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Debes ingresar un modelo o marca",
+    })
+    return;
+  }
+
   console.log(filter);
   let url = `https://api.api-ninjas.com/v1/motorcycles?${filter}=${search}`;
   console.log(url);
@@ -92,24 +96,26 @@ async function  searchProduct() {
     console.log(error);
   });
 
-  showPoducts(search);
+  if(motos.length === 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "No se encontraron resultados",
+    })
+    return;
+  }
+  showPoducts();
 }
 
-function showPoducts(search) {
+function showPoducts() {
   let motoContainer = document.getElementById("products-list");
   motoContainer.innerHTML = "";
 
-  if (search) {
-    filterProducts = productsList.filter((product) =>
-      product.name.includes(search.toLowerCase())
-    );
-  } else {
-    filterProducts = productsList;
-  }
   if (localStorage.getItem("cart") !== null) {
     cart = JSON.parse(localStorage.getItem("cart"));
-    updateCartView(cart);
+    updateFavView(cart);
   }
+
   motos.map((moto) => {
     let motoNueva = document.createElement("article");
     motoNueva.className = "bike";
@@ -119,7 +125,7 @@ function showPoducts(search) {
             <p>Cilindrada: ${moto.displacement.split('.')[0]}cc</p>
             <div class='card-buttons'>
               <button type="button" onclick="showBike('${moto.model}')">Ver</button>
-              <button type="button" onclick="addToCart('${moto.model}')">Agregar a favoritos</button>
+              <button type="button" onclick="addToFavourites('${moto.model}')">Agregar a favoritos</button>
             <div>
         `;
         motoContainer.appendChild(motoNueva);
@@ -129,7 +135,7 @@ function showPoducts(search) {
   document.getElementById("cart").style.display = "block";
 }
 
-function addToCart(model) {
+function addToFavourites(model) {
 
   Swal.fire({
     position: "top-center",
@@ -146,10 +152,10 @@ function addToCart(model) {
 
   cart.push(motos.find((moto) => moto.model === model));
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartView(cart);
+  updateFavView(cart);
 }
 
-function updateCartView(cart) {
+function updateFavView(cart) {
   finalPrice = 0;
   cartListView = document.getElementById("cart-list");
   cartListView.innerHTML = "";
@@ -166,9 +172,15 @@ function updateCartView(cart) {
 
 function clearFavourites() {
 
-  alert("Se han eliminado todos los favoritos");
+  Swal.fire({
+    position: "top-center",
+    icon: "success",
+    title: "Se han eliminado todos los favoritos",
+    showConfirmButton: false,
+    timer: 1500
+  })
   localStorage.removeItem("cart");
-  updateCartView([]);
+  updateFavView([]);
 }
 
 function generateAuthUserList(usernameList, passwordList) {
@@ -184,38 +196,28 @@ function generateAuthUserList(usernameList, passwordList) {
   return users;
 }
 
-function generateProductList(productList, prices) {
-  let products = [];
-  for (let i = 0; i < productList.length; i++) {
-    let product = new Product(productList[i], prices[i], i);
-    products.push(product);
-  }
-  return products;
-}
-
 function showBike(model) {
   let moto = motos.find((moto) => moto.model === model);
-  let modal = document.getElementById("details-modal");
-  modal.style.display = "block";
-  modal.innerHTML = `
+
+  Swal.fire({
+    title: `<h3 style="text-transform: capitalize">${moto.make}</h3>
+            <h6>${moto.model}</h6> `,
+    icon: "info",
+    html: `
     <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h3 style="text-transform: capitalize">${moto.make}</h3>
-      <p><span>Modelo: </span>${moto.model}</p>
-      <p><span>Año:</span>${moto.year}</p>
-      <p><span>Tipo: </span>${moto.type}</p>
-      <p><span>Motor: </span>${moto.engine}</p>
-      <p><span>Capacidad de tanque: </span>${moto.fuel_capacity}</p>
-      <p><span>Compresión: </span>${moto.compression}</p>
-      <p><span>Systema de admisión: </span>${moto.fuel_system?moto.fuel_system: 'Sin información'}</p>
-      <p><span>Caja de cambios: </span>${moto.gearbox}</p>
-
-      
+      <p><span>Año: </span>${moto.year? moto.year : 'Sin información'}</p>
+      <p><span>Tipo: </span>${moto.type? moto.type : 'Sin información'}</p>
+      <p><span>Motor: </span>${moto.engine? moto.engine : 'Sin información'}</p>
+      <p><span>Capacidad de tanque: </span>${moto.fuel_capacit? moto.fuel_capacit : 'Sin información'}</p>
+      <p><span>Compresión: </span>${moto.compression? moto.compression : 'Sin información'}</p>
+      <p><span>Systema de admisión: </span>${moto.fuel_system? moto.fuel_system: 'Sin información'}</p>
+      <p><span>Caja de cambios: </span>${moto.gearbox? moto.gearbox: 'Sin información'}</p>
     </div>
-  `;
-}
-
-function closeModal() {
-  let modal = document.getElementById("details-modal");
-  modal.style.display = "none";
+    `,
+    showCloseButton: true,
+    focusConfirm: false,
+    confirmButtonText: `
+      <i class="fa fa-thumbs-up"></i> Cerrar
+    `
+  });
 }
